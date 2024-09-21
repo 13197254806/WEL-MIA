@@ -1,0 +1,50 @@
+[
+  {
+    "attack_name": "Loss Attack",
+    "metric": {
+      "auc": 0.544,
+      "tpr_at_point_01_fpr": 0.015,
+      "tpr_at_point_001_fpr": 0.002
+    }
+  },
+  {
+    "attack_name": "LiRA-Base",
+    "metric": {
+      "auc": 0.748,
+      "tpr_at_point_01_fpr": 0.018,
+      "tpr_at_point_001_fpr": 0.003
+    }
+  },
+  {
+    "attack_name": "Ours-Base",
+    "metric": {
+      "auc": 0.88,
+      "tpr_at_point_01_fpr": 0.091,
+      "tpr_at_point_001_fpr": 0.0
+    }
+  },
+  {
+    "attack_name": "LiRA-Align",
+    "metric": {
+      "auc": 0.856,
+      "tpr_at_point_01_fpr": 0.022,
+      "tpr_at_point_001_fpr": 0.004
+    }
+  },
+  {
+    "attack_name": "Ours-Align",
+    "metric": {
+      "auc": 0.902,
+      "tpr_at_point_01_fpr": 0.312,
+      "tpr_at_point_001_fpr": 0.006
+    }
+  },
+  {
+    "attack_name": "Min-K% Attack",
+    "metric": {
+      "auc": 0.543,
+      "tpr_at_point_01_fpr": 0.019,
+      "tpr_at_point_001_fpr": 0.0
+    }
+  }
+]

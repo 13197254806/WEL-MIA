@@ -318,6 +318,16 @@ def main():
                 f"Checkpoint detected, resuming training at {last_checkpoint}. To avoid this behavior, change "
                 "the `--output_dir` or add `--overwrite_output_dir` to train from scratch."
             )
+    elif not os.path.isdir(training_args.output_dir) and training_args.do_train:
+        def add_directory(dir):
+            parts = dir.rstrip('/').split('/')
+            now_dir = ''
+            for part in parts:
+                now_dir += part
+                if not os.path.exists(now_dir):
+                    os.mkdir(now_dir)
+                now_dir += '/'
+        add_directory(training_args.output_dir)
 
     # Set seed before initializing model.
     set_seed(training_args.seed)

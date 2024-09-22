@@ -1,7 +1,8 @@
 import copy
 import json
 import random
-
+import os
+import shutil
 import torch
 import bisect
 import numpy as np
@@ -9,12 +10,21 @@ from tqdm import tqdm
 from sklearn.metrics import roc_curve
 
 
+def add_directory(dir):
+    parts = dir.rstrip('/').split('/')
+    now_dir = ''
+    for part in parts:
+        now_dir += part
+        if not os.path.exists(now_dir):
+            os.mkdir(now_dir)
+        now_dir += '/'
+
 def load_json_file(position):
     with open(position, 'r', encoding='utf-8') as f:
         data = json.load(f)
     return data
 
-def save_data_in_file(data, position):
+def save_data_in_json_file(data, position):
     with open(position, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
@@ -62,9 +72,9 @@ def generate_paraphrased_text(data_list, mask_model, mask_tokenizer, neighbour_n
             input_ids=input_ids,
             attention_mask=attention_masks,
             do_sample=True,
-            top_k=40,
-            top_p=0.9,
-            # max_length=128,
+            top_k=100,
+            top_p=0.95,
+            max_new_tokens=len(input_ids[0]),
             num_return_sequences=neighbour_number
         )
         for output in outputs:

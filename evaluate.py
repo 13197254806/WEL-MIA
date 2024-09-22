@@ -12,7 +12,6 @@ from attacks import *
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--device', default='0,1', type=str, required=False, help='set which device to use')
 parser.add_argument('--tokenizer_path', default='model/target_model', type=str, required=False, help='path of the tokenizer')
 parser.add_argument('--eval_batch_size', default=2, type=int, required=False, help='batch size for evaluation')
 parser.add_argument('--target_model', default='model/target_model', type=str, required=False, help='path of the target model')
@@ -42,8 +41,6 @@ parser.add_argument('--no_showing_result', action='store_true', help='whether to
 parser.add_argument('--random_seed', default=12345, type=int, required=False)
 
 args = parser.parse_args()
-print('args:\n' + args.__repr__())
-os.environ["CUDA_VISIBLE_DEVICES"] = args.device
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 scores_dict = {}
 
@@ -172,16 +169,16 @@ if __name__ == "__main__":
     '''
     show and save_results
     '''
-    if args.overwrite_result:
-        if os.path.exists(args.save_result):
-            shutil.rmtree(args.save_result)
-        os.mkdir(args.save_result)
-        os.mkdir(f'{args.save_result}/scores')
-        os.mkdir(f'{args.save_result}/roc_curves')
-        os.mkdir(f'{args.save_result}/metrics')
+    add_directory(f'{args.save_result}/scores')
+    add_directory(f'{args.save_result}/roc_curves')
+    add_directory(f'{args.save_result}/metrics')
     metrics = []
+    plt.figure(figsize=(12, 5))
     for attack_name, scores in scores_dict.items():
+        plt.subplot(1, 2, 1)
         plt, metric = draw_roc_curves(labels, scores, plt, desc=attack_name, scale='log')
+        plt.subplot(1, 2, 2)
+        plt, _ = draw_roc_curves(labels, scores, plt, desc=attack_name, scale='linear')
         result = {
             'score': scores.tolist(),
             'label': labels,
@@ -192,8 +189,14 @@ if __name__ == "__main__":
         })
         if args.save_result != 'no':
             if not (os.path.exists(f'{args.save_result}/scores/{attack_name}.json') and not args.overwrite_result):
-                save_data_in_file(result, f'{args.save_result}/scores/{attack_name}.json')
+                save_data_in_json_file(result, f'{args.save_result}/scores/{attack_name}.json')
 
+    plt.subplot(1, 2, 1)
+    plt.plot([0, 1], [0, 1], color='brown', ls='--')
+    plt.xlabel('fpr')
+    plt.ylabel('tpr')
+    plt.legend()
+    plt.subplot(1, 2, 2)
     plt.plot([0, 1], [0, 1], color='brown', ls='--')
     plt.xlabel('fpr')
     plt.ylabel('tpr')
@@ -202,7 +205,7 @@ if __name__ == "__main__":
         if not (os.path.exists(f'{args.save_result}/roc_curves/roc.png') and not args.overwrite_result):
             plt.savefig(f'{args.save_result}/roc_curves/roc.png')
         if not (os.path.exists(f'{args.save_result}/metrics/metrics.json') and not args.overwrite_result):
-            save_data_in_file(metrics, f'{args.save_result}/metrics/metrics.json')
+            save_data_in_json_file(metrics, f'{args.save_result}/metrics/metrics.json')
 
     if not args.no_showing_result:
         plt.show()

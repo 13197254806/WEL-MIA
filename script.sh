@@ -1,5 +1,5 @@
 # split dataset
-python prepare.py --dataset knkarthick/xsum --tokenizer_path openai-community/gpt2-medium --paraphrase_model Vamsi/T5_Paraphrase_Paws --max_length 128 --member_space_size 10000 --non_member_space_size 10000 --max_number 1000 --gamma 1 --save_packed_data data/packed_data --packing_data --generating_neighbours
+python prepare.py --dataset knkarthick/xsum --tokenizer_path openai-community/gpt2-medium --paraphrase_model Vamsi/T5_Paraphrase_Paws --max_length 128 --member_space_size 100 --non_member_space_size 100 --max_number 100 --gamma 1 --save_packed_data data/packed_data --packing_data --generating_neighbours
 
 # finetune target model
 python ./finetune/run_clm.py --model_name_or_path openai-community/gpt2-medium --train_file data/packed_data/member.json --validation_file data/packed_data/validation.json --save_strategy no --num_train_epochs 2 --per_device_train_batch_size 2 --per_device_eval_batch_size 2 --do_train --do_eval --output_dir model/target_model --overwrite_output_dir --learning_rate 2e-5

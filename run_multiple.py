@@ -15,6 +15,11 @@ parser.add_argument('--paraphrase_model', default='Vamsi/T5_Paraphrase_Paws', ty
 args = parser.parse_args()
 
 
+if 'CUDA_VISIBLE_DEVICES' in os.environ.keys():
+    cuda_option = 'CUDA_VISIBLE_DEVICES=' + os.environ['CUDA_VISIBLE_DEVICES'] + ' '
+else:
+    cuda_option = ''
+
 
 '''
     Datasets for evaluation
@@ -58,21 +63,11 @@ models_dict = {
     }
 }
 
-
-if not os.path.exists('data'):
-    os.mkdir('data')
-if not os.path.exists('model'):
-    os.mkdir('model')
-
 for dataset_name in datasets_list:
     data_path = 'data' if args.overwrite_data else 'data/' + dataset_name.split('/')[-1]
-    if not os.path.exists(data_path):
-        os.mkdir(data_path)
-        os.mkdir(data_path + '/evaluated_data')
-        os.mkdir(data_path + '/packed_data')
-        os.mkdir(data_path + '/paraphrased_data')
+
     # split dataset
-    script_prepare = f"python prepare.py --dataset {dataset_name} " \
+    script_prepare = f"{cuda_option} python prepare.py --dataset {dataset_name} " \
                      f"--tokenizer_path openai-community/gpt2 " \
                      f"--max_length {args.max_length} " \
                      f"--member_space_size {args.member_space_size} " \
@@ -98,12 +93,8 @@ for dataset_name in datasets_list:
         model_path = 'model' if args.overwrite_models else 'model/' + dataset_name.split('/')[-1] +\
                                                            '-' + model_name.split('/')[-1]
 
-        if not os.path.exists(model_path):
-            os.mkdir(model_path)
-            os.mkdir(model_path + '/reference_model_align')
-            os.mkdir(model_path + '/target_model')
         # finetune target model
-        script_ft_target = f"python finetune/run_clm.py " \
+        script_ft_target = f"{cuda_option} python finetune/run_clm.py " \
                            f"--model_name_or_path {model_name} " \
                            f"--train_file {data_path}/packed_data/member.json " \
                            f"--validation_file {data_path}/packed_data/validation.json " \
@@ -120,7 +111,7 @@ for dataset_name in datasets_list:
 
 
         # finetune reference model-align
-        script_ft_reference = f"python finetune/run_clm.py " \
+        script_ft_reference = f"{cuda_option} python finetune/run_clm.py " \
                               f"--model_name_or_path {model_name} " \
                               f"--train_file {data_path}/evaluated_data/text.json " \
                               f"--validation_file {data_path}/packed_data/validation.json " \
@@ -138,7 +129,7 @@ for dataset_name in datasets_list:
 
         result_path = 'result/' + dataset_name.split('/')[-1] + '-' + model_name.split('/')[-1]
         # evaluate membership inference attacks
-        script_evaluation = f"python evaluate.py --target_model {model_path}/target_model " \
+        script_evaluation = f"{cuda_option} python evaluate.py --target_model {model_path}/target_model " \
                             f"--reference_model_base {model_name} " \
                             f"--reference_model_align {model_path}/reference_model_align " \
                             f"--paraphrase_model {args.paraphrase_model} " \

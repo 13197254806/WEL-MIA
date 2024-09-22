@@ -119,7 +119,6 @@ def random_sampling(full_dataset, max_nums, gamma, seed):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--device', default='0,1', type=str, required=False, help='set which device to use')
 parser.add_argument('--dataset', default='knkarthick/xsum', type=str, required=False, help='the raw dataset name')
 parser.add_argument('--tokenizer_path', default='openai-community/gpt2', type=str, required=False, help='the tokenizer path')
 parser.add_argument('--max_length', default=128, type=int, required=False, help='the packed length')
@@ -129,18 +128,18 @@ parser.add_argument('--save_packed_data', default='data/packed_data', type=str, 
 parser.add_argument('--random_seed', default=12345, type=int, required=False)
 parser.add_argument('--packing_data', action='store_true', help='whether to pack raw data')
 parser.add_argument('--evaluated_data', default='data/evaluated_data', type=str, required=False, help='no/saved_path')
+parser.add_argument('--paraphrased_data', default='data/paraphrased_data', type=str, required=False, help='path of the paraphrased target dataset')
 
 parser.add_argument('--generating_neighbours', action='store_true', help='whether to generate neighbours')
 parser.add_argument('--neighbour_number', default=10, type=int, required=False, help='the number of neighbours in Neighbour Attack')
 parser.add_argument('--paraphrase_model', default='model/paraphrase_model', type=str, required=False, help='path of the align paraphrase model')
-parser.add_argument('--paraphrased_data', default='data/paraphrased_data', type=str, required=False, help='path of the paraphrased target dataset')
+
 
 
 parser.add_argument('--max_number', default=1000, type=int, required=False, help='the number of evaluated non-member samples')
 parser.add_argument('--gamma', default=1.0, type=float, required=False, help='the ratio of members to non-members')
 
 args = parser.parse_args()
-os.environ["CUDA_VISIBLE_DEVICES"] = args.device
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
@@ -148,6 +147,7 @@ if __name__ == '__main__':
     if args.packing_data:
         # packing raw data
         tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_path)
+        add_directory(args.save_packed_data)
         pack_raw_data(tokenizer,
                       args.dataset,
                       args.save_packed_data,
@@ -159,8 +159,9 @@ if __name__ == '__main__':
     # load full packed dataset and randomly sample target dataset
     packed_dataset = load_full_packed_data(args.save_packed_data)
     dataset = random_sampling(packed_dataset, args.max_number, args.gamma, args.random_seed)
-    save_data_in_file(dataset['text'], f'{args.evaluated_data}/text.json')
-    save_data_in_file(dataset['label'], f'{args.evaluated_data}/label.json')
+    add_directory(args.evaluated_data)
+    save_data_in_json_file(dataset['text'], f'{args.evaluated_data}/text.json')
+    save_data_in_json_file(dataset['label'], f'{args.evaluated_data}/label.json')
 
     if args.generating_neighbours:
         # generating neighbours of evaluated dataset and saving neighbours in json files
@@ -168,7 +169,8 @@ if __name__ == '__main__':
         paraphrase_tokenizer = T5Tokenizer.from_pretrained(args.paraphrase_model)
         paraphrased_list = generate_paraphrased_text(dataset['text'], paraphrase_model, paraphrase_tokenizer,
                                                  args.neighbour_number, device)
-        save_data_in_file(paraphrased_list, args.paraphrased_data + '/paraphrased.json')
+        add_directory(args.paraphrased_data)
+        save_data_in_json_file(paraphrased_list, args.paraphrased_data + '/paraphrased.json')
 
 
 

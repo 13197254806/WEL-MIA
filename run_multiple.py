@@ -11,7 +11,7 @@ parser.add_argument('--non_member_space_size', default=10000, type=int, required
 parser.add_argument('--max_number', default=1000, type=int, required=False, help='the number of evaluated non-member samples')
 parser.add_argument('--gamma', default=1.0, type=float, required=False, help='the ratio of members to non-members')
 parser.add_argument('--neighbour_number', default=10, type=int, required=False, help='the number of neighbours in Neighbour Attack')
-parser.add_argument('--paraphrase_model', default='google-t5/t5-base', type=str, required=False, help='path of the align paraphrase model')
+parser.add_argument('--paraphrase_model', default='Vamsi/T5_Paraphrase_Paws', type=str, required=False, help='path of the align paraphrase model')
 args = parser.parse_args()
 
 

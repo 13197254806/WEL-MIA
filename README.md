@@ -67,7 +67,7 @@ Run MIAs on a single model and dataset.
 Systematically run MIAs on multiple models and datasets. The datasets are `['knkarthick/xsum', 'SetFit/ag_news', 'iohadrubin/wikitext-103-raw-v1']`. The models are `['openai-community/gpt2', 'openai-community/gpt2-medium', 'openai-community/gpt2-large', 'EleutherAI/pythia-160m', 'EleutherAI/gpt-neo-125m']`. There are 15 experiments in total, and at least 40 GB of storage space is required to save all models and data. If you don't want to save models, use the `--overwrite_models` option. The results of each set of experiments are saved in `result/dataset_name-model_name`.
 
 ```sh
-python run_multiple.py --member_space_size 10000 --non_member_space_size 10000 --max_number 1000 --learning_rate 2e-5 --num_train_epochs 2 
+python run_multiple.py --member_space_size 10000 --non_member_space_size 10000 --max_number 1000 
 ```
 
 ### Resources

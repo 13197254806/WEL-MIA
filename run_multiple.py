@@ -72,7 +72,7 @@ for dataset_name in datasets_list:
         os.mkdir(data_path + '/paraphrased_data')
     # split dataset
     script_prepare = f"python prepare.py --dataset {dataset_name} " \
-                     f"--tokenizer_path model/gpt2 " \
+                     f"--tokenizer_path openai-community/gpt2 " \
                      f"--max_length {args.max_length} " \
                      f"--member_space_size {args.member_space_size} " \
                      f"--non_member_space_size {args.non_member_space_size} " \

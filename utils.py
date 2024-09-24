@@ -28,6 +28,11 @@ def save_data_in_json_file(data, position):
     with open(position, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2)
 
+def sort_attack_names(attacks_dic):
+    priority = ['Loss Attack', 'Neighbor Attack', 'Min-K% Attack', 'LiRA-Base', 'LiRA-Align', 'Ours-Base', 'Ours-Align']
+    priority = dict(zip(priority, list(range(len(priority)))))
+    sorted_attacks_dic = dict(sorted(attacks_dic.items(), key=lambda x: priority[x[0]]))
+    return sorted_attacks_dic
 
 def get_sequence_probs(confidence, ids):
     """
@@ -72,8 +77,8 @@ def generate_paraphrased_text(data_list, mask_model, mask_tokenizer, neighbour_n
             input_ids=input_ids,
             attention_mask=attention_masks,
             do_sample=True,
-            top_k=100,
-            top_p=0.95,
+            top_k=40,
+            top_p=0.9,
             max_new_tokens=len(input_ids[0]),
             num_return_sequences=neighbour_number
         )

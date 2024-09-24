@@ -165,6 +165,7 @@ if __name__ == "__main__":
 
     if not args.no_evaluate_neighbour_attack:
         scores_dict['Neighbor Attack'] = neighbour_attack(probabilities['target'], probabilities['paraphrased'], args.neighbour_number)
+    scores_dict = sort_attack_names(scores_dict)
 
     '''
     show and save_results
@@ -209,6 +210,5 @@ if __name__ == "__main__":
 
     if not args.no_showing_result:
         plt.show()
-
 
 

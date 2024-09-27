@@ -26,6 +26,7 @@ Dependencies can be installed with the command:
 pip install -r requirements.txt
 ```
 #### System environment
+The system environment we use is as follows:
 - OS: `Ubuntu 22.04.2 LTS`
 - CUDA Version: `12.4`
 - Python Version: `3.9.19`

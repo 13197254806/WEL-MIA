@@ -2,7 +2,8 @@
 
 The implementation of the paper "Not All Tokens Are Equal: Membership Inference Attacks Against Fine-tuned Language Models".
 
-### Dependencies
+### Dependencies and Environment
+#### Dependencies
 
 ```
 datasets>=2.21.0
@@ -24,6 +25,11 @@ Dependencies can be installed with the command:
 ```
 pip install -r requirements.txt
 ```
+#### System environment
+- System: `Ubuntu 22.04.2 LTS`
+- CUDA Version: `12.4`
+- Python Version: `3.9.19`
+
 
 ### WEL-MIA
 
